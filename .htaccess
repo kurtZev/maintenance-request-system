@@ -1,0 +1,14 @@
+# Sends every request into the public/ folder, so the app/, config/,
+# database/ and storage/ folders can never be opened from a browser.
+# Needed because InfinityFree serves htdocs/ and cannot be pointed at public/.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteRule (.*) public/$1 [L]
+</IfModule>
+
+# Safety net: if the rewrite module is ever unavailable, refuse everything
+# rather than let app/, config/ or database/ be opened directly.
+<IfModule !mod_rewrite.c>
+    Require all denied
+</IfModule>

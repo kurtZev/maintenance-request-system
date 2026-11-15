@@ -1,0 +1,27 @@
+# Uploaded files: keep the folder, not its contents
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Database credentials
+config/db_local.php
+
+# Uploaded files
+storage/uploads/*
+!storage/uploads/.gitkeep
+
+# Temporary files
+*.log
+*.tmp
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db
+.DS_Store
