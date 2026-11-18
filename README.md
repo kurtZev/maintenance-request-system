@@ -8,7 +8,7 @@ Built with PHP (MVC), MySQL, Bootstrap 5 and Bootstrap Icons.
 1. Copy the project to `C:\xampp\htdocs\maintenance-request-system`.
 2. Start **Apache** and **MySQL** in the XAMPP Control Panel.
 3. In phpMyAdmin, create a database named `maintenance_db` (utf8mb4) and import `database/database.sql`.
-4. Check the credentials in `config/db_connect.php` (XAMPP default: user `root`, empty password).
+4. `config/db_connect.php` features automatic environment detection (XAMPP default: user `root`, empty password on `localhost`; and InfinityFree credentials online).
 5. Open <http://localhost/maintenance-request-system/>.
 
 `database/database.sql` contains the tables only. Create the first administrator
@@ -48,7 +48,19 @@ and stores only a `password_hash()` value. After that, add more accounts in
 
 ## Deploy to InfinityFree
 
-1. Create a MySQL database in the InfinityFree control panel and import `database/database.sql` with its phpMyAdmin.
-2. Put the InfinityFree host, database name, username and password in `config/db_connect.php`.
-3. Upload everything **inside** the project folder (including both `.htaccess` files) into `htdocs/`. Do not upload `database/` or `README.md`.
-4. Open your InfinityFree domain. Links adjust to the new address automatically.
+1. In the InfinityFree control panel, create a MySQL database. Note its **host** (e.g. `sql123.infinityfree.com`),
+   **database name** (`if0_12345678_...`), **username** (`if0_12345678`) and the **hosting account password**.
+   The XAMPP values (`localhost`, `root`, empty password) do not work there.
+2. In XAMPP phpMyAdmin, open `maintenance_db`, then **Export → Quick → SQL**. Exporting from inside the
+   database (not the server) keeps `CREATE DATABASE` out of the file. This copies your accounts too, so you can
+   log in on the live site; `create_admin.php` cannot run on InfinityFree (no command line).
+3. In InfinityFree phpMyAdmin, open the new database and **Import** that file.
+4. Upload everything **inside** the project folder into `htdocs/`, including both hidden `.htaccess` files and the
+   `storage/uploads/` folder. Skip `.git/`, `database/`, `README.md` and `QA_TEST_RESULTS.md`. Delete InfinityFree's
+   default `index2.html`.
+5. On the server, edit `htdocs/config/db_connect.php` with the four values from step 1. Keep the local copy
+   unchanged so XAMPP keeps working.
+6. Open your InfinityFree domain. Links adjust to the new address automatically.
+
+If a page shows "Something went wrong", set `APP_DEBUG` to `true` in `htdocs/bootstrap.php`, reload to read the
+real error, then set it back to `false`.

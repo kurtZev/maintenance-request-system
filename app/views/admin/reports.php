@@ -214,19 +214,30 @@ $breakdownTable = function (string $title, string $icon, array $rows, bool $badg
         if (typeof Chart === 'undefined') return;   // CDN unreachable: tables above still show the numbers
 
         const data = <?= json_encode($chartData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-        Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
-        Chart.defaults.color = '#66758c';
+        
+        function getThemeConfig() {
+            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            return {
+                textColor: isDark ? '#94a3b8' : '#66758c',
+                borderColor: isDark ? '#131e36' : '#ffffff',
+                gridColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)'
+            };
+        }
 
-        new Chart(document.getElementById('statusChart'), {
+        const theme = getThemeConfig();
+        Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+        Chart.defaults.color = theme.textColor;
+
+        const statusChart = new Chart(document.getElementById('statusChart'), {
             type: 'doughnut',
             data: {
                 labels: data.status.labels,
-                datasets: [{ data: data.status.values, backgroundColor: data.status.colors, borderWidth: 2, borderColor: '#fff' }]
+                datasets: [{ data: data.status.values, backgroundColor: data.status.colors, borderWidth: 2, borderColor: theme.borderColor }]
             },
             options: { maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: false } } }
         });
 
-        new Chart(document.getElementById('monthlyChart'), {
+        const monthlyChart = new Chart(document.getElementById('monthlyChart'), {
             type: 'bar',
             data: {
                 labels: data.monthly.labels,
@@ -237,9 +248,39 @@ $breakdownTable = function (string $title, string $icon, array $rows, bool $badg
             },
             options: {
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } },
-                plugins: { legend: { position: 'bottom' } }
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        ticks: { precision: 0, color: theme.textColor },
+                        grid: { color: theme.gridColor }
+                    }, 
+                    x: { 
+                        ticks: { color: theme.textColor },
+                        grid: { display: false } 
+                    } 
+                },
+                plugins: { 
+                    legend: { 
+                        position: 'bottom',
+                        labels: { color: theme.textColor }
+                    } 
+                }
             }
+        });
+
+        // Update charts dynamically when theme is switched
+        window.addEventListener('themeChanged', function () {
+            const newTheme = getThemeConfig();
+            Chart.defaults.color = newTheme.textColor;
+
+            statusChart.data.datasets[0].borderColor = newTheme.borderColor;
+            statusChart.update();
+
+            monthlyChart.options.scales.y.ticks.color = newTheme.textColor;
+            monthlyChart.options.scales.y.grid.color = newTheme.gridColor;
+            monthlyChart.options.scales.x.ticks.color = newTheme.textColor;
+            monthlyChart.options.plugins.legend.labels.color = newTheme.textColor;
+            monthlyChart.update();
         });
     })();
     </script>

@@ -1,6 +1,6 @@
 # QA test results
 
-Run against http://localhost/maintenance-request-system on 2026-11-15. Every row was executed; nothing is marked Pass without a check.
+Run against http://localhost/maintenance-request-system on 2026-11-15 and 2026-11-16. Every row was executed; nothing is marked Pass without a check. The UI rows were measured in a browser at 375 x 812 (phone size).
 
 | Test ID | Feature | Test scenario | Test input | Expected result | Actual result | Pass/Fail |
 |---|---|---|---|---|---|---|
@@ -116,3 +116,16 @@ Run against http://localhost/maintenance-request-system on 2026-11-15. Every row
 | ERR-02 | PHP errors | No PHP warning, notice or fatal error in any response | all responses of this run | none | none found | Pass |
 | ERR-03 | MySQL errors | No SQL error text in any response | same responses (SQLSTATE / PDOException) | none | none found | Pass |
 | ERR-04 | PHP errors | No new PHP or SQL errors in the server logs during the run | Apache and PHP error logs | no new error lines | no new error lines | Pass |
+| UI-01 | Responsive UI | Login page on a phone | 375 px wide | No sideways scrolling; fields fit the screen | No overflow; all fields fit | Pass |
+| UI-02 | Responsive UI | Admin dashboard on a phone | 375 px wide | Statistic cards stack one per row; no sideways scrolling | Cards stacked; no overflow | Pass |
+| UI-03 | Responsive UI | All Requests on a phone | 375 px wide | Table scrolls inside its card; page does not scroll sideways; sidebar hidden | No page overflow; table inside scroll container; sidebar hidden | Pass |
+| UI-04 | Responsive UI | Admin request view with timeline on a phone | 375 px wide | No sideways scrolling; timeline shown | No overflow; 4 timeline steps shown | Pass |
+| UI-05 | Responsive UI | Admin edit request form on a phone | 375 px wide | Fields and buttons fit the screen | No overflow; all fields and buttons fit | Pass |
+| UI-06 | Responsive UI | Users list on a phone | 375 px wide | Table scrolls inside its card; no page overflow | No overflow; table inside scroll container | Pass |
+| UI-07 | Responsive UI | Add User form on a phone | 375 px wide | Fields and buttons fit the screen | No overflow; all fields and buttons fit | Pass |
+| UI-08 | Responsive UI | Reports page on a phone | 375 px wide | No sideways scrolling | No overflow | Pass |
+| UI-09 | Responsive UI | Menu button opens and closes the sidebar | Tap menu button, then tap the dark overlay | Sidebar slides in with all admin links, closes on overlay tap | Opened 260 px wide with Dashboard, All Requests, Users, Reports; hidden again after overlay tap | Pass |
+| UI-10 | Responsive UI | Requester dashboard on a phone | 375 px wide | 4 statistic cards; no sideways scrolling | 4 cards; no overflow | Pass |
+| UI-11 | Responsive UI | My Requests on a phone | 375 px wide | Table scrolls inside its card; no page overflow | No overflow; table inside scroll container | Pass |
+| UI-12 | Responsive UI | New Request form on a phone | 375 px wide | Fields and buttons fit the screen | No overflow; all fields and buttons fit | Pass |
+| UI-13 | Responsive UI | Requester request view on a phone | 375 px wide, long title | Title wraps; Edit and Cancel buttons fit; timeline shown | No overflow; title wrapped to 2 lines; buttons fit; 4 timeline steps | Pass |

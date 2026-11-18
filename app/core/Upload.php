@@ -73,7 +73,14 @@ class Upload
 
     private static function directory(): string
     {
-        return ROOT_PATH . '/storage/uploads';
+        $dir = ROOT_PATH . '/storage/uploads';
+
+        // Some upload tools skip empty folders; create it if it did not make it to the server.
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+
+        return $dir;
     }
 
     /** Only names created by savePhoto() are accepted, so no other file can be reached. */

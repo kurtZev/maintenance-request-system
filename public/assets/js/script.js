@@ -3,6 +3,9 @@
  */
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ── Theme Switcher (Light / Dark Mode) ───────────────────── */
+    initThemeSwitcher();
+
     /* ── Sidebar Toggle (Mobile) ─────────────────────────────── */
     const sidebar      = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -217,4 +220,57 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    /**
+     * Theme Switcher implementation
+     */
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-bs-theme', theme);
+        document.documentElement.setAttribute('data-theme', theme);
+
+        const icons = document.querySelectorAll('#themeToggleIcon, .theme-toggle-icon');
+        const btns = document.querySelectorAll('#themeToggle, .theme-toggle-btn');
+
+        icons.forEach(function (icon) {
+            if (theme === 'dark') {
+                icon.className = 'bi bi-sun-fill text-warning';
+            } else {
+                icon.className = 'bi bi-moon-stars-fill text-primary';
+            }
+        });
+
+        btns.forEach(function (btn) {
+            btn.setAttribute('title', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+            btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode');
+        });
+
+        // Notify charts and other custom components
+        window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: theme } }));
+    }
+
+    function initThemeSwitcher() {
+        const savedTheme = localStorage.getItem('mrs-theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+
+        applyTheme(currentTheme);
+
+        document.querySelectorAll('#themeToggle, .theme-toggle-btn').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const activeTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+                const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('mrs-theme', newTheme);
+                applyTheme(newTheme);
+            });
+        });
+
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+                if (!localStorage.getItem('mrs-theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+    }
 });

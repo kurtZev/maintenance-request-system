@@ -26,7 +26,8 @@ class Database
                 // Strict mode: MySQL refuses invalid values (a status that is not in
                 // the ENUM list, text longer than its column) rather than quietly
                 // saving a blank or cut-off value. XAMPP leaves this off by default.
-                self::$pdo->exec("SET SESSION sql_mode = CONCAT(@@sql_mode, ',STRICT_ALL_TABLES')");
+                // NULLIF/CONCAT_WS avoid a leading comma when the server's mode is empty.
+                self::$pdo->exec("SET SESSION sql_mode = CONCAT_WS(',', NULLIF(@@sql_mode, ''), 'STRICT_ALL_TABLES')");
             } catch (PDOException $e) {
                 // Log the real reason; never show connection details to visitors.
                 error_log('Database connection failed: ' . $e->getMessage());
